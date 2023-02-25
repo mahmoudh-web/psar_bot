@@ -2,13 +2,14 @@ import { reverse, min } from "lodash-es"
 
 const extractCandleData = candle => {
 	const data = {
-		startTime: candle.k.t,
-		endTime: candle.k.T,
-		open: candle.k.o,
-		high: candle.k.h,
-		low: candle.k.l,
-		close: candle.k.c,
-		volume: candle.k.v,
+		symbol: candle.data.s,
+		startTime: candle.data.k.t,
+		endTime: candle.data.k.T,
+		open: candle.data.k.o,
+		high: candle.data.k.h,
+		low: candle.data.k.l,
+		close: candle.data.k.c,
+		volume: candle.data.k.v,
 	}
 
 	return data

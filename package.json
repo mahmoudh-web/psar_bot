@@ -10,10 +10,12 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"bson": "^5.0.1",
 		"ccxt": "^2.8.31",
 		"dotenv": "^16.0.3",
 		"lodash-es": "^4.17.21",
 		"luxon": "^3.2.1",
+		"mongodb": "^5.1.0",
 		"node-binance-api": "^0.13.1",
 		"tulind": "^0.8.20",
 		"ws": "^8.12.1"
