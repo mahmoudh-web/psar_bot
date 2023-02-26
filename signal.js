@@ -2,6 +2,7 @@ import { getBalance, marketBuy, marketSell } from "./binance.js"
 import * as indicators from "./indicators.js"
 import { addIndicatorData } from "./candles.js"
 import { DateTime } from "luxon"
+import { storeTrade } from "./storeTrade.js"
 
 const amount = process.env.AMOUNT
 
@@ -24,8 +25,10 @@ const signal = async instrument => {
 	const balances = await getBalance()
 	const usdt = balances["USDT"].free
 	const tokenBalance = balances[token].free
-	const tokenValue = tokenBalance * candleData.at(-1).close
-	// console.log(`BALANCES: USDT -> ${usdt}, ${token} -> ${tokenBalance}`)
+	const tokenValue = tokenBalance * candleData.at(-1).open
+	// console.log(
+	// 	`BALANCES: USDT -> ${usdt}, ${token} -> ${tokenBalance}, value -> ${tokenValue}`
+	// )
 
 	// if token balance, look for sell, otherwise look for buy
 	if (tokenValue > 10 && sell(candleData.at(-1))) {
@@ -38,6 +41,8 @@ const signal = async instrument => {
 		console.log(
 			`${DateTime.now().toISO()}: SELL ${token}: ${trade.info.status}`
 		)
+		await storeTrade(trade)
+		// console.log(trade)
 	} else if (usdt > amount + 1 && buy(candleData.at(-1))) {
 		// console.log(
 		// 	`BUY ${symbol} - ${DateTime.fromMillis(
@@ -48,6 +53,7 @@ const signal = async instrument => {
 		console.log(
 			`${DateTime.now().toISO()}: BUY ${token}: ${trade.info.status}`
 		)
+		await storeTrade(trade)
 	}
 	// else {
 	// 	console.log(

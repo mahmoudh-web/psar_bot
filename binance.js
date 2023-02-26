@@ -27,6 +27,7 @@ const marketBuy = async symbol => {
 
 const marketSell = async (symbol, balance) => {
 	const trade = await binance.createMarketSellOrder(symbol, balance)
+	return trade
 }
 
 // binance.balance((error, balances) => {
