@@ -28,14 +28,14 @@ const checkSignal = async candles => {
 	// get token balance
 	const tokenBalance = await getTokenBalance(process.env.TOKEN)
 	if (/*tokenBalance > 0 &&*/ sell(candleData.at(-1))) {
-		console.log("sell")
+		// console.log("sell")
 		return "sell"
 	} else {
 		if (buy(candleData.at(-1))) {
-			console.log("buy")
+			// console.log("buy")
 			return "buy"
 		} else {
-			console.log("no signal")
+			// console.log("no signal")
 			return "no signal"
 		}
 	}

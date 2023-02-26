@@ -15,12 +15,12 @@ const connect = async client => {
 
 	// Establish and verify connection
 	await client.db("admin").command({ ping: 1 })
-	console.log("Connected successfully to db server")
+	// console.log("Connected successfully to db server")
 }
 
 const disconnect = async client => {
 	await client.close()
-	console.log("Disconnected from db server")
+	// console.log("Disconnected from db server")
 }
 
 export { database, connect, disconnect }

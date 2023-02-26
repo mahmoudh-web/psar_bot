@@ -6,6 +6,8 @@ import { connect, disconnect, database } from "./func/db.js"
 import { getTokens } from "./func/getTokens.js"
 import { connectionString } from "./func/stream.js"
 import { extractCandleData } from "./candles.js"
+import { getBalance } from "./binance.js"
+import { signal } from "./signal.js"
 
 // get tokens from db
 const page = Number(process.env.TOKEN_SET) - 1
@@ -14,7 +16,7 @@ await connect(client)
 
 const tokens = await getTokens(page)
 if (!tokens.length) {
-	console.log("No Tokens to trade. Exiting")
+	// console.log("No Tokens to trade. Exiting")
 	await disconnect(client)
 	process.exit(0)
 }
@@ -35,7 +37,7 @@ const stream = new WebSocket(socketQuery)
 stream.on("error", console.error)
 
 stream.on("open", function open() {
-	console.log("Connected")
+	console.log("Connected to Stream")
 })
 
 stream.on("message", async data => {
@@ -43,9 +45,9 @@ stream.on("message", async data => {
 	const candle = extractCandleData(msg)
 
 	const index = tokens.findIndex(obj => obj.symbol === candle.symbol)
-	console.log(
-		`New tick data for ${tokens[index].symbol} = Have ${tokens[index].candles.length} candles`
-	)
+	// console.log(
+	// 	`New tick data for ${tokens[index].symbol} = Have ${tokens[index].candles.length} candles`
+	// )
 	if (!tokens[index].candles.length) {
 		tokens[index].candles.push(candle)
 	} else if (tokens[index].candles.at(-1).startTime === candle.startTime) {
@@ -55,11 +57,13 @@ stream.on("message", async data => {
 		tokens[index].candles.push(candle)
 		if (tokens[index].candles.length > tokens[index].limit) {
 			tokens[index].candles.shift()
-			// process candle
-			console.log(
-				`Looking for signal on ${tokens[index].symbol}, ${tokens[index].candles.length} candles stored`
-			)
 		}
+		// process candle
+		await signal(
+			tokens[index].symbol,
+			tokens[index].token,
+			tokens[index].candles
+		)
 	}
 
 	// console.log(JSON.stringify(tokens, null, 2))

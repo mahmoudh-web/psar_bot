@@ -2,22 +2,48 @@ import * as dotenv from "dotenv"
 dotenv.config()
 
 import { database, connect, disconnect } from "../func/db.js"
+
+import fs from "fs"
+import csv from "fast-csv"
+
 const { client, db } = database()
 
-const data = {
-	symbol: "ASTRUSDT",
-	token: "ASTR",
-	interval: "1m",
-	bollinger_period: 2,
-	bollinger_deviation: 0.5,
-	psar_increment: 0.1,
-	psar_max: 0.5,
+const getTokens = async () => {
+	return new Promise((resolve, reject) => {
+		const tokens = []
+		fs.createReadStream("./create/newCoins.csv")
+			.pipe(csv.parse({ headers: true }))
+			.on("error", error => reject(error))
+			.on("data", row => {
+				const settings = {
+					symbol: row.symbol,
+					token: row.symbol.replace("USDT", ""),
+					interval: row.interval,
+					bollinger_deviation: Number(row.bollinger_deviation),
+					bollinger_period: Number(row.bollinger_period),
+					psar_increment: Number(row.psar_increment),
+					psar_max: Number(row.psar_max),
+				}
+				tokens.push(settings)
+			})
+			.on("end", () => {
+				resolve(tokens)
+			})
+	})
 }
-await connect(client)
-const tokensCollection = db.collection("bot_tokens")
-await tokensCollection
-	.insertOne(data)
-	.then(res => console.log(res))
-	.catch(err => console.log(err))
-// console.log(`Created bot settings for ${data.symbol}`)
-await disconnect(client)
+
+const data = await getTokens()
+console.log(data)
+
+if (data.length) {
+	await connect(client)
+	const tokensCollection = db.collection("bot_tokens")
+	for await (let token of data) {
+		await tokensCollection
+			.insertOne(token)
+			.then(res => console.log(res))
+			.catch(err => console.log(err))
+		console.log(`Created bot settings for ${token.symbol}`)
+	}
+	await disconnect(client)
+}

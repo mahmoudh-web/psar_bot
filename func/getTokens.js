@@ -15,6 +15,7 @@ const getTokens = async page => {
 	await tokensPointer.forEach(token => {
 		tokenList.push({
 			symbol: token.symbol,
+			token: token.token,
 			interval: token.interval,
 			settings: {
 				psar: {
@@ -28,7 +29,6 @@ const getTokens = async page => {
 			},
 			limit: token.bollinger_period + 1,
 			candles: [],
-			processed: false,
 		})
 	})
 
