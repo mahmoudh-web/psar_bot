@@ -34,32 +34,32 @@ const signal = async (symbol, token, candles) => {
 	const usdt = balances["USDT"].free
 	const tokenBalance = balances[token].free
 	const tokenValue = tokenBalance * candleData.at(-1).close
-	// console.log(`BALANCES: USDT -> ${usdt}, ${token} -> ${tokenBalance}`)
+	console.log(`BALANCES: USDT -> ${usdt}, ${token} -> ${tokenBalance}`)
 
 	// if token balance, look for sell, otherwise look for buy
 	if (tokenValue > 10 && sell(candleData.at(-1))) {
-		// console.log(
-		// 	`SELL ${symbol} - ${DateTime.fromMillis(
-		// 		candleData.at(-1).startTime
-		// 	).toISO()}`
-		// )
+		console.log(
+			`SELL ${symbol} - ${DateTime.fromMillis(
+				candleData.at(-1).startTime
+			).toISO()}`
+		)
 		const trade = await marketSell(symbol, tokenBalance)
-		// console.log(`SELL ${token}: ${trade.info.status}`)
+		console.log(`SELL ${token}: ${trade.info.status}`)
 	} else if (usdt > amount + 1 && buy(candleData.at(-1))) {
-		// console.log(
-		// 	`BUY ${symbol} - ${DateTime.fromMillis(
-		// 		candleData.at(-1).startTime
-		// 	).toISO()}`
-		// )
+		console.log(
+			`BUY ${symbol} - ${DateTime.fromMillis(
+				candleData.at(-1).startTime
+			).toISO()}`
+		)
 		const trade = await marketBuy(symbol)
-		// console.log(`BUY ${token}: ${trade.info.status}`)
-	} //else {
-	// console.log(
-	// 	`NO SIGNAL ${symbol} - ${DateTime.fromMillis(
-	// 		candleData.at(-1).startTime
-	// 	).toISO()}`
-	// )
-	//}
+		console.log(`BUY ${token}: ${trade.info.status}`)
+	} else {
+		console.log(
+			`NO SIGNAL ${symbol} - ${DateTime.fromMillis(
+				candleData.at(-1).startTime
+			).toISO()}`
+		)
+	}
 }
 
 function buy(candle) {

@@ -45,9 +45,9 @@ stream.on("message", async data => {
 	const candle = extractCandleData(msg)
 
 	const index = tokens.findIndex(obj => obj.symbol === candle.symbol)
-	// console.log(
-	// 	`New tick data for ${tokens[index].symbol} = Have ${tokens[index].candles.length} candles`
-	// )
+	console.log(
+		`New tick data for ${tokens[index].symbol} = Have ${tokens[index].candles.length} candles`
+	)
 	if (!tokens[index].candles.length) {
 		tokens[index].candles.push(candle)
 	} else if (tokens[index].candles.at(-1).startTime === candle.startTime) {
