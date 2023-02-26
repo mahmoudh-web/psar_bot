@@ -16,10 +16,22 @@ await connect(client)
 
 const tokens = await getTokens(page)
 if (!tokens.length) {
-	// console.log("No Tokens to trade. Exiting")
+	console.log("No Tokens to trade. Exiting")
 	await disconnect(client)
 	process.exit(0)
 }
+
+// const indicatorSettings = {
+// 	psar_settings: {
+// 		increment: token.,
+// 		max: token.,
+// 	},
+
+// 	bollinger_settings: {
+// 		period: token.,
+// 		deviation: token.,
+// 	}
+// }
 
 let tokensList = ""
 for (let i = 0; i < tokens.length; i++) {
@@ -45,9 +57,10 @@ stream.on("message", async data => {
 	const candle = extractCandleData(msg)
 
 	const index = tokens.findIndex(obj => obj.symbol === candle.symbol)
-	console.log(
-		`New tick data for ${tokens[index].symbol} = Have ${tokens[index].candles.length} candles`
-	)
+	// console.log(
+	// 	`New tick data for ${tokens[index].symbol} = Have ${tokens[index].candles.length} candles`
+	// )
+
 	if (!tokens[index].candles.length) {
 		tokens[index].candles.push(candle)
 	} else if (tokens[index].candles.at(-1).startTime === candle.startTime) {
@@ -60,9 +73,11 @@ stream.on("message", async data => {
 		}
 		// process candle
 		await signal(
-			tokens[index].symbol,
-			tokens[index].token,
-			tokens[index].candles
+			tokens[index]
+			// .symbol,
+			// tokens[index].token,
+			// tokens[index].candles,
+			// indicatorSettings
 		)
 	}
 

@@ -61,7 +61,7 @@ const psar = (candles, settings) => {
 
 	tulind.indicators.psar.indicator(
 		[high, low],
-		[settings.increment, settings.max],
+		[settings.psar_increment, settings.psar_max],
 		(err, results) => {
 			if (err) console.log(err)
 			results[0].forEach(res => output.push(res))
@@ -80,7 +80,7 @@ const bollinger = (candles, settings) => {
 
 	tulind.indicators.bbands.indicator(
 		[close],
-		[settings.period, settings.deviation],
+		[settings.bollinger_period, settings.bollinger_deviation],
 		(err, results) => {
 			if (err) console.log(err)
 			results[0].forEach(res => lower.push(res))
