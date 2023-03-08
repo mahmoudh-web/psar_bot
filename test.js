@@ -1,38 +1,35 @@
 import * as dotenv from "dotenv"
 dotenv.config()
-import ccxt from "ccxt"
+import crypto from "crypto"
+import axios from "axios"
+import { DateTime } from "luxon"
+// const url = `${process.env.PROXY_SERVER}balance`
+const key = process.env.APIKEY
+const timeStamp = `timestamp=${DateTime.now().toMillis()}`
 
-const binanceClient = new ccxt.binance({
-	apiKey: process.env.BINANCE_API_KEY,
-	secret: process.env.BINANCE_API_SECRET,
+function createSignature(query_string) {
+	return crypto
+		.createHmac("sha256", process.env.BINANCE_API_SECRET)
+		.update(query_string)
+		.digest("hex")
+}
+
+const signature = createSignature(timeStamp)
+const url = `https://api.binance.com/api/v3/order?signature=${signature}&${timeStamp}`
+
+await axios({
+	method: "post",
+	url,
+	headers: {
+		"X-MBX-APIKEY": process.env.BINANCE_API_KEY,
+		// "signature": process.env.BINANCE_API_SECRET,
+		// signature,
+		"Content-Type": "application/x-www-form-urlencoded",
+	},
+	data: {
+		"symbol": "BTCUSDT",
+		"side": "buy",
+		"type": "MARKET",
+		"quoteOrderQty": 15,
+	},
 })
-
-const buyToken = async symbol => {
-	const amount = Number(process.env.AMOUNT)
-	console.log(amount)
-	const buyBTC = await binanceClient.createOrder(
-		symbol,
-		"market",
-		"buy",
-		0,
-		null,
-		{ quoteOrderQty: amount }
-	)
-	console.log(JSON.stringify(buyBTC, null, 2))
-}
-
-const sellToken = async symbol => {
-	// const token = symbol.replace("USDT", "")
-	const allBalance = await binanceClient.fetchBalance()
-	const tokenBalance = allBalance[symbol].free
-	console.log(tokenBalance)
-
-	const sellToken = await binanceClient.createMarketSellOrder(
-		`${symbol}USDT`,
-		tokenBalance
-	)
-	console.log(sellToken)
-}
-
-await sellToken("FET")
-// await buyToken("FETUSDT")

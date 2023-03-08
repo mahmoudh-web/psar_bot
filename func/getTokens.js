@@ -2,7 +2,7 @@ import * as dotenv from "dotenv"
 dotenv.config()
 
 import { database } from "./db.js"
-
+import { max } from "lodash-es"
 const { client, db } = database()
 
 const getTokens = async page => {
@@ -19,15 +19,24 @@ const getTokens = async page => {
 			interval: token.interval,
 			settings: {
 				psar: {
-					psar_increment: token.psar_increment,
-					psar_max: token.psar_max,
+					increment: token.settings.psar.increment,
+					max: token.settings.psar.max,
 				},
 				bollinger: {
-					bollinger_period: token.bollinger_period,
-					bollinger_deviation: token.bollinger_deviation,
+					period: token.settings.bollinger.period,
+					deviation: token.settings.bollinger.deviation,
+				},
+				macd: {
+					short: token.settings.macd.short,
+					long: token.settings.macd.long,
+					signal: token.settings.macd.signal,
 				},
 			},
-			limit: token.bollinger_period + 1,
+			limit:
+				max([
+					token.settings.bollinger.period,
+					token.settings.macd.long,
+				]) + 1,
 			candles: [],
 		})
 	})
