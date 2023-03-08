@@ -48,14 +48,14 @@ stream.on("message", async data => {
 	const index = tokens.findIndex(obj => obj.symbol === candle.symbol)
 
 	if (!tokens[index].candles.length) {
-		console.log(`${tokens[index].symbol}: first candle`)
+		// console.log(`${tokens[index].symbol}: first candle`)
 		tokens[index].candles.push(candle)
 	} else if (tokens[index].candles.at(-1).startTime === candle.startTime) {
-		console.log(`${tokens[index].symbol}: same candle`)
+		// console.log(`${tokens[index].symbol}: same candle`)
 		tokens[index].candles.pop()
 		tokens[index].candles.push(candle)
 	} else {
-		console.log(`${tokens[index].symbol}: new candle`)
+		// console.log(`${tokens[index].symbol}: new candle`)
 		tokens[index].candles.push(candle)
 		if (tokens[index].candles.length > tokens[index].limit) {
 			tokens[index].candles.shift()
@@ -69,7 +69,7 @@ stream.on("message", async data => {
 			)
 		}
 	}
-	console.log(
-		`${tokens[index].symbol}: ${tokens[index].candles.length} candles, need ${tokens[index].limit}`
-	)
+	// console.log(
+	// 	`${tokens[index].symbol}: ${tokens[index].candles.length} candles, need ${tokens[index].limit}`
+	// )
 })
