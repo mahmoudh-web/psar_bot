@@ -6,7 +6,7 @@ import { connect, disconnect, database } from "./func/db.js"
 import { getTokens } from "./func/getTokens.js"
 import { connectionString } from "./func/stream.js"
 import { extractCandleData } from "./candles.js"
-import { psarMacd, testFunction } from "./psar_macd.js"
+import { psarMacd } from "./psar_macd.js"
 import { getBalance } from "./binance.js"
 import { DateTime } from "luxon"
 
