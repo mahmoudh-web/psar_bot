@@ -33,8 +33,8 @@ const formatCandles = candles => {
 	return { open, high, low, close, volume }
 }
 
-const addIndicatorData = (candles, ...data) => {
-	const candleData = reverse(candles)
+const addIndicatorData = (klines, ...data) => {
+	const candleData = reverse(klines)
 	const lengths = []
 
 	data.forEach(indicator => {

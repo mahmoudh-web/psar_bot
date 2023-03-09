@@ -6,21 +6,28 @@ import { connect, disconnect, database } from "./func/db.js"
 import { getTokens } from "./func/getTokens.js"
 import { connectionString } from "./func/stream.js"
 import { extractCandleData } from "./candles.js"
-import { signal } from "./signal.js"
-import { psarMacd } from "./psar_macd.js"
+import { psarMacd, testFunction } from "./psar_macd.js"
+import { getBalance } from "./binance.js"
+import { DateTime } from "luxon"
 
 // get tokens from db
 const page = Number(process.env.TOKEN_SET) - 1
 const { client } = database()
 await connect(client)
 
+// const tokens = []
 const tokens = await getTokens(page)
 
+// const tokens = [tokensTemp[8]]
+// console.log(tokens)
 if (!tokens.length) {
 	console.log("No Tokens to trade. Exiting")
 	await disconnect(client)
 	process.exit(0)
 }
+
+// add array to capture candle data
+// tokens.forEach(token => (token.candles = []))
 
 let tokensList = ""
 for (let i = 0; i < tokens.length; i++) {
@@ -29,7 +36,44 @@ for (let i = 0; i < tokens.length; i++) {
 }
 
 console.log(`Retreieved settings for: ${tokensList}`)
+//TODO: get candledata to match limit for each token
 
+let balances = []
+const updateBalances = async () => {
+	console.log("updating balances")
+	balances = await getBalance()
+}
+
+await updateBalances()
+setInterval(updateBalances, 60000)
+
+// process candle queue
+// const queue = []
+// const processQueue = () => {
+// 	if (!queue.length) {
+// 		console.log("Nothing to analyse")
+// 		return
+// 	}
+
+// 	console.log(`${DateTime.now().toISO()}: Processing queue`)
+// 	// console.log(queue)
+// 	do {
+// 		const tokenData = queue.shift()
+// 		psarMacd(tokenData, balances)
+// 	} while (queue.length)
+// }
+
+// const checkSignals = () => {
+// 	tokens.forEach(token => {
+// 		console.log("before", token.candles.length)
+// 		if (token.candles.length >= 2) testFunction(token, balances)
+// 		console.log("after", token.candles.length)
+// 	})
+// }
+// setInterval(checkSignals, 3000)
+// setInterval(processQueue, 3000)
+
+// set up stream
 const socketQuery = `wss://stream.binance.com:9443/stream?streams=${connectionString(
 	tokens
 )}`
@@ -49,27 +93,42 @@ stream.on("message", async data => {
 
 	if (!tokens[index].candles.length) {
 		// console.log(`${tokens[index].symbol}: first candle`)
-		tokens[index].candles.push(candle)
+		// tokens[index].candles.push(candle)
+		tokens[index].candles = [...tokens[index].candles, candle]
 	} else if (tokens[index].candles.at(-1).startTime === candle.startTime) {
 		// console.log(`${tokens[index].symbol}: same candle`)
 		tokens[index].candles.pop()
-		tokens[index].candles.push(candle)
+		// tokens[index].candles.push(candle)
+		tokens[index].candles = [...tokens[index].candles, candle]
 	} else {
 		// console.log(`${tokens[index].symbol}: new candle`)
-		tokens[index].candles.push(candle)
+		// tokens[index].candles.push(candle)
+		tokens[index].candles = [...tokens[index].candles, candle]
 		if (tokens[index].candles.length > tokens[index].limit) {
 			tokens[index].candles.shift()
+
 			// process candle
-			await psarMacd(
-				tokens[index]
+			psarMacd(
+				tokens[index],
+				balances
 				// .symbol,
 				// tokens[index].token,
 				// tokens[index].candles,
 				// indicatorSettings
 			)
+
+			// add symbol to queue
+			// const data = tokens[index]
+			// queue.push(data)
+			// console.log(data)
+			// console.log(tokens[index].candles.length)
 		}
 	}
+
 	// console.log(
-	// 	`${tokens[index].symbol}: ${tokens[index].candles.length} candles, need ${tokens[index].limit}`
+	// 	`${tokens[index].symbol}, ${tokens[index].interval} (${tokens[index].token}): ${tokens[index].candles.length} candles, need ${tokens[index].limit}`
 	// )
 })
+
+stream.on("ping", () => stream.pong())
+stream.on("close", () => stream.open())

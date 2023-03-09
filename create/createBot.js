@@ -2,7 +2,7 @@ import * as dotenv from "dotenv"
 dotenv.config()
 
 import { database, connect, disconnect } from "../func/db.js"
-
+import { max } from "lodash-es"
 import fs from "fs"
 import csv from "fast-csv"
 
@@ -38,8 +38,10 @@ const { client, db } = database()
 const data = tokens.map(token => {
 	return {
 		symbol: token.symbol,
+		token: token.symbol.replace("USDT", ""),
 		interval: token.interval,
 		settings: token.settings,
+		limit: max([token.settings.macd.long, token.settings.bollinger.period]),
 	}
 })
 console.log(data)
