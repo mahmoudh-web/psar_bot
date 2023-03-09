@@ -44,7 +44,7 @@ const psarMacd = async (instrument, balance) => {
 	// }
 
 	if (sellSignal) {
-		const tokenBalance = balance[token].free
+		const tokenBalance = balance[token]
 		const tokenValue = tokenBalance * candleData.at(-1).open
 		if (tokenValue > 10) {
 			const trade = await marketSell(symbol, tokenBalance)
@@ -54,7 +54,7 @@ const psarMacd = async (instrument, balance) => {
 			await storeTrade(trade)
 		}
 	} else if (buySignal) {
-		const usdt = balances["USDT"].free
+		const usdt = balance["USDT"]
 		if (usdt > amount) {
 			const trade = await marketBuy(symbol)
 			console.log(

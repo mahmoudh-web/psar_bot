@@ -11,7 +11,8 @@ const binance = new ccxt.binance({
 })
 
 const getBalance = async () => {
-	return await binance.fetchBalance()
+	const balances = await binance.fetchBalance()
+	return balances.free
 }
 
 const marketBuy = async symbol => {
