@@ -43,25 +43,22 @@ const psarMacd = async (instrument, balance) => {
 	// 	}
 	// }
 
-	if (sellSignal) {
-		const tokenBalance = balance[token]
-		const tokenValue = tokenBalance * candleData.at(-1).open
-		if (tokenValue > 10) {
-			const trade = await marketSell(symbol, tokenBalance)
-			console.log(
-				`${DateTime.now().toISO()}: SELL ${token}:` // ${trade.info.status}`
-			)
-			await storeTrade(trade)
-		}
-	} else if (buySignal) {
-		const usdt = balance["USDT"]
-		if (usdt > amount) {
-			const trade = await marketBuy(symbol)
-			console.log(
-				`${DateTime.now().toISO()}: BUY ${token}:` // ${trade.info.status}`
-			)
-			await storeTrade(trade)
-		}
+	const usdt = balance["USDT"]
+	const tokenBalance = balance[token]
+	const tokenValue = tokenBalance * candleData.at(-1).open
+
+	if (sellSignal && tokenValue > 10) {
+		const trade = await marketSell(symbol, tokenBalance)
+		console.log(
+			`${DateTime.now().toISO()}: SELL ${token}:` // ${trade.info.status}`
+		)
+		await storeTrade(trade)
+	} else if (buySignal && tokenValue < 10 && usdt > amount) {
+		const trade = await marketBuy(symbol)
+		console.log(
+			`${DateTime.now().toISO()}: BUY ${token}:` // ${trade.info.status}`
+		)
+		await storeTrade(trade)
 	}
 	// else {
 	// 	console.log(`${DateTime.now().toISO()}: NO SIGNAL ${symbol}`)

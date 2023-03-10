@@ -11,20 +11,24 @@ const binance = new ccxt.binance({
 })
 
 const getBalance = async () => {
-	const balances = await binance.fetchBalance()
+	const balances = await binance.fetchBalance().catch(err => console.log(err))
 	return balances.free
 }
 
 const marketBuy = async symbol => {
-	const trade = await binance.createMarketBuyOrder(symbol, 0, {
-		quoteOrderQty: amount,
-	})
+	const trade = await binance
+		.createMarketBuyOrder(symbol, 0, {
+			quoteOrderQty: amount,
+		})
+		.catch(err => console.log(err))
 
 	return trade
 }
 
 const marketSell = async (symbol, balance) => {
-	const trade = await binance.createMarketSellOrder(symbol, balance)
+	const trade = await binance
+		.createMarketSellOrder(symbol, balance)
+		.catch(err => console.log(err))
 	return trade
 }
 
