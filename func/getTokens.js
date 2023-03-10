@@ -10,7 +10,10 @@ const getTokens = async page => {
 
 	const botTokensCollection = db.collection("bot_tokens")
 
-	const tokensPointer = botTokensCollection.find({}).skip(page).limit(10)
+	const tokensPointer = botTokensCollection
+		.find({})
+		.skip(page * 10)
+		.limit(10)
 
 	await tokensPointer.forEach(token => {
 		tokenList.push({
