@@ -1,8 +1,10 @@
-const array = [1, 2, 3, 4, 5, 6, 7, 8]
+import { DateTime } from "luxon"
+import axios from "axios"
 
-do {
-	const first = array.shift()
+const candles = await axios({
+	method: "get",
+	url: "https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=21",
+}).then(res => res.data)
+const date = DateTime.fromMillis(1678548060000).toISO()
 
-	console.log(first)
-	console.log(array)
-} while (array.length)
+candles.forEach(candle => console.log(DateTime.fromMillis(candle[0]).toISO()))

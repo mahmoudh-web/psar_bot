@@ -1,11 +1,23 @@
+import WebSocket from "ws"
+import { extractCandleData } from "../candles.js"
+
 const connectionString = data => {
-	let string = ""
+	let socketQuery = "wss://stream.binance.com:9443/stream?streams="
 	for (let i = 0; i < data.length; i++) {
-		string += `${data[i].symbol.toLowerCase()}@kline_${data[i].interval}`
-		if (i < data.length - 1) string += "/"
+		socketQuery += `${data[i].symbol.toLowerCase()}@kline_${
+			data[i].interval
+		}`
+		if (i < data.length - 1) socketQuery += "/"
 	}
 
-	return string
+	let tokensList = ""
+	for (let i = 0; i < data.length; i++) {
+		tokensList += data[i].symbol
+		if (i < data.length - 1) tokensList += ", "
+	}
+
+	console.log(`Retreieved settings for: ${tokensList}`)
+	return { socketQuery, tokensList }
 }
 
 export { connectionString }

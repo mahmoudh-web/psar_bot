@@ -1,4 +1,4 @@
-import { getBalance, marketBuy, marketSell } from "./binance.js"
+import { marketBuy, marketSell } from "./binance.js"
 import * as indicators from "./indicators.js"
 import { addIndicatorData } from "./candles.js"
 import { DateTime } from "luxon"
@@ -33,20 +33,12 @@ const psarMacd = async (instrument, balance) => {
 	const sellSignal = sell(candleData.at(-1))
 	const buySignal = buy(candleData.at(-1))
 
-	// let balances = []
-	// if (sellSignal || buySignal) {
-	// 	balances = await getBalance()
-	// 	if (balances.status != 200) {
-	// 		console.log(`USDT: ${balances.usdt.free}`)
-	// 		console.log(`${token}: ${balances[token].free}`)
-	// 		return
-	// 	}
-	// }
-
+	// check balances
 	const usdt = balance["USDT"]
 	const tokenBalance = balance[token]
 	const tokenValue = tokenBalance * candleData.at(-1).open
 
+	// console.log(symbol, tokenValue)
 	if (sellSignal && tokenValue > 10) {
 		const trade = await marketSell(symbol, tokenBalance)
 		console.log(
@@ -59,8 +51,7 @@ const psarMacd = async (instrument, balance) => {
 			`${DateTime.now().toISO()}: BUY ${token}:` // ${trade.info.status}`
 		)
 		await storeTrade(trade)
-	}
-	// else {
+	} //else {
 	// 	console.log(`${DateTime.now().toISO()}: NO SIGNAL ${symbol}`)
 	// }
 }

@@ -1,21 +1,24 @@
 import * as dotenv from "dotenv"
 dotenv.config()
 
-import { database } from "./db.js"
+import supabase from "./supabase.js"
 import { max } from "lodash-es"
-const { client, db } = database()
+import { historical } from "./historical.js"
 
-const getTokens = async page => {
+const getActiveTokens = async () => {
+	const { data: tokens, error: tokenError } = await supabase
+		.from("tokens")
+		.select()
+		.eq("active", true)
+
+	if (tokenError) {
+		console.log(tokenError)
+		return []
+	}
+
 	const tokenList = []
 
-	const botTokensCollection = db.collection("bot_tokens")
-
-	const tokensPointer = botTokensCollection
-		.find({})
-		.skip(page * 10)
-		.limit(10)
-
-	await tokensPointer.forEach(token => {
+	tokens.forEach(token => {
 		tokenList.push({
 			symbol: token.symbol,
 			token: token.token,
@@ -44,7 +47,36 @@ const getTokens = async page => {
 		})
 	})
 
+	// populate tokens with historical candle data
+	for await (let token of tokenList) {
+		const candles = await historical(
+			token.symbol,
+			token.interval,
+			token.limit
+		)
+		if (candles.length) {
+			const index = tokenList.findIndex(
+				obj => obj.symbol === token.symbol
+			)
+
+			candles.forEach(candle => {
+				const candleData = {
+					symbol: token.symbol,
+					startTime: candle[0],
+					endTime: candle[6],
+					open: candle[1],
+					high: candle[2],
+					low: candle[3],
+					close: candle[4],
+					volume: candle[5],
+				}
+
+				tokenList[index].candles.push(candleData)
+			})
+		}
+	}
+
 	return tokenList
 }
 
-export { getTokens }
+export { getActiveTokens }

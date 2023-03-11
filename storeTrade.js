@@ -1,10 +1,9 @@
-import { connect, disconnect, database } from "./func/db.js"
+import supabase from "./func/supabase.js"
 
 const storeTrade = async trade => {
-	const { client, db } = database()
-	const tradesCollection = db.collection("trades")
-
-	await tradesCollection.insertOne(trade)
+	const { data, error } = await supabase
+		.from("trades")
+		.insert([{ data: trade }])
 }
 
 export { storeTrade }

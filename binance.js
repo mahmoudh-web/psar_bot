@@ -32,4 +32,8 @@ const marketSell = async (symbol, balance) => {
 	return trade
 }
 
-export { getBalance, marketBuy, marketSell }
+const getExchangeInfo = async () => {
+	return await binance.fetchMarkets()
+}
+
+export { getBalance, marketBuy, marketSell, getExchangeInfo }
