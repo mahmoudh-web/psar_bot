@@ -3,12 +3,11 @@ dotenv.config()
 
 import WebSocket from "ws"
 import supabase from "./func/supabase.js"
-
-import MacdBot from "./bots/macd.js"
 import { getActiveTokens } from "./func/getTokens.js"
 import { connectionString } from "./func/stream.js"
 import { getBalance } from "./binance.js"
 import { extractCandleData } from "./candles.js"
+import { psarMacd } from "./bots/psar_macd.js"
 
 // get tokens from db
 let tokens = await getActiveTokens()
@@ -19,7 +18,6 @@ const updateStream = () => {
 	;({ socketQuery, tokensList } = connectionString(tokens))
 }
 
-// keep token balances stored
 let balances = []
 const updateBalances = async () => {
 	// console.log("updating balances")
@@ -70,9 +68,7 @@ const dataStream = (url, tokenList) => {
 				tokens[index].candles.shift()
 
 				// process candle
-				if (tokens[index].type === "macd")
-					MacdBot(tokens[index], balances)
-				// psarMacd(tokens[index], balances)
+				psarMacd(tokens[index], balances)
 			}
 		}
 	})

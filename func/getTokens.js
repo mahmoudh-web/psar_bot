@@ -20,6 +20,7 @@ const getActiveTokens = async () => {
 
 	tokens.forEach(token => {
 		tokenList.push({
+			type: token.type,
 			symbol: token.symbol,
 			token: token.token,
 			interval: token.interval,
