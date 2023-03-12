@@ -9,6 +9,9 @@ import { getActiveTokens } from "./func/getTokens.js"
 import { connectionString } from "./func/stream.js"
 import { getBalance } from "./binance.js"
 import { extractCandleData } from "./candles.js"
+import macdSignal from "./bots/macdSignal.js"
+
+const mode = process.env.TRADE_MODE
 
 // get tokens from db
 let tokens = await getActiveTokens()
@@ -70,9 +73,13 @@ const dataStream = (url, tokenList) => {
 				tokens[index].candles.shift()
 
 				// process candle
-				if (tokens[index].type === "macd")
-					MacdBot(tokens[index], balances)
-				// psarMacd(tokens[index], balances)
+				if (mode === "trade") {
+					if (tokens[index].type === "macd")
+						MacdBot(tokens[index], balances)
+					// psarMacd(tokens[index], balances)
+				} else if (mode === "signals") {
+					macdSignal(tokens[index], balances)
+				}
 			}
 		}
 	})
