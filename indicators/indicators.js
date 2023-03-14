@@ -1,10 +1,10 @@
 import tulind from "tulind"
 import { formatCandles } from "../func/candles.js"
 
-const atr = (candles, period) => {
+const atr = async (candles, period) => {
 	const { open, high, low, close, volume } = formatCandles(candles)
 	const data = []
-	tulind.indicators.atr.indicator(
+	await tulind.indicators.atr.indicator(
 		[high, low, close],
 		[period],
 		(err, results) => {
@@ -15,13 +15,13 @@ const atr = (candles, period) => {
 	return data
 }
 
-const macd = (candles, settings) => {
+const macd = async (candles, settings) => {
 	const { open, high, low, close, volume } = formatCandles(candles)
 	const macdLine = []
 	const macdSignal = []
 	const histogram = []
 
-	tulind.indicators.macd.indicator(
+	await tulind.indicators.macd.indicator(
 		[close],
 		[settings.short, settings.long, settings.signal],
 		(err, results) => {
@@ -34,32 +34,36 @@ const macd = (candles, settings) => {
 	return { macdLine, macdSignal, histogram }
 }
 
-const sma = (candles, period) => {
+const sma = async (candles, period) => {
 	const { open, high, low, close, volume } = formatCandles(candles)
 	const smaOutput = []
 
-	tulind.indicators.sma.indicator([close], [period], (err, results) => {
+	await tulind.indicators.sma.indicator([close], [period], (err, results) => {
 		if (err) console.log(err)
 		results[0].forEach(res => smaOutput.push(res))
 	})
 	return smaOutput
 }
 
-const indicatorSma = (candles, period) => {
+const indicatorSma = async (candles, period) => {
 	const smaOutput = []
 
-	tulind.indicators.sma.indicator([candles], [period], (err, results) => {
-		if (err) console.log(err)
-		results[0].forEach(res => smaOutput.push(res))
-	})
+	await tulind.indicators.sma.indicator(
+		[candles],
+		[period],
+		(err, results) => {
+			if (err) console.log(err)
+			results[0].forEach(res => smaOutput.push(res))
+		}
+	)
 	return smaOutput
 }
 
-const psar = (candles, settings) => {
+const psar = async (candles, settings) => {
 	const { open, high, low, close, volume } = formatCandles(candles)
 	const output = []
 
-	tulind.indicators.psar.indicator(
+	await tulind.indicators.psar.indicator(
 		[high, low],
 		[settings.increment, settings.max],
 		(err, results) => {
@@ -71,14 +75,14 @@ const psar = (candles, settings) => {
 	return output
 }
 
-const bollinger = (candles, settings) => {
+const bollinger = async (candles, settings) => {
 	const { open, high, low, close, volume } = formatCandles(candles)
 
 	const upper = []
 	const lower = []
 	const middle = []
 
-	tulind.indicators.bbands.indicator(
+	await tulind.indicators.bbands.indicator(
 		[close],
 		[settings.period, settings.deviation],
 		(err, results) => {

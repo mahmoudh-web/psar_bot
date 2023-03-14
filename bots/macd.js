@@ -4,6 +4,7 @@ import { marketBuy, marketSell } from "../func/binance.js"
 import * as indicators from "../indicators/indicators.js"
 import { addIndicatorData } from "../func/candles.js"
 import { storeTrade } from "../func/storeTrade.js"
+import { macdBuy, macdSell } from "./signals/macdSignals.js"
 
 const amount = process.env.AMOUNT
 
@@ -25,8 +26,8 @@ const MacdBot = async (instrument, balance) => {
 	// console.log(symbol, candleData)
 
 	// check for buy and sell signals
-	const sellSignal = sell(candleData.at(-1))
-	const buySignal = buy(candleData.at(-1))
+	const sellSignal = macdSell(candleData.at(-1))
+	const buySignal = macdBuy(candleData.at(-1))
 
 	// check balances
 	const usdt = balance["USDT"]
@@ -49,17 +50,6 @@ const MacdBot = async (instrument, balance) => {
 	} //else {
 	// 	console.log(`${DateTime.now().toISO()}: NO SIGNAL ${symbol}`)
 	// }
-}
-
-function buy(candle) {
-	const { macd_line, macd_signal, macd_histogram } = candle
-	// return open < bollinger_lower && psar < low
-	return macd_line < 0 && macd_signal < 0 && macd_histogram > 0
-}
-
-function sell(candle) {
-	const { macd_line, macd_signal, macd_histogram } = candle
-	return macd_line > 0 && macd_signal > 0 && macd_histogram < 0
 }
 
 export default MacdBot

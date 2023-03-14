@@ -1,17 +1,18 @@
 import * as indicators from "../indicators/indicators.js"
 import { addIndicatorData } from "../func/candles.js"
 import supabase from "../func/supabase.js"
+import { macdBuy, macdSell } from "./signals/macdSignals.js"
 
 const amount = process.env.AMOUNT
 let activeTrade = false
 
 const macdSignal = async (instrument, balance) => {
-	const { symbol, token, settings } = instrument
+	const { symbol, token, settings, interval } = instrument
 	const candleInfo = JSON.parse(JSON.stringify(instrument.candles))
 	console.log(`Looking for signal on ${symbol} - (${token})`)
 
 	// apply indicators
-	const macd = indicators.macd(candleInfo, settings.macd)
+	const macd = await indicators.macd(candleInfo, settings.macd)
 
 	const candleData = addIndicatorData(
 		JSON.parse(JSON.stringify(candleInfo)),
@@ -21,8 +22,8 @@ const macdSignal = async (instrument, balance) => {
 	)
 
 	// check for buy and sell signals
-	const sellSignal = sell(candleData.at(-1))
-	const buySignal = buy(candleData.at(-1))
+	const sellSignal = macdSell(candleData.at(-1))
+	const buySignal = macdBuy(candleData.at(-1))
 
 	// check balances
 	const usdt = balance["USDT"]
@@ -58,17 +59,6 @@ const macdSignal = async (instrument, balance) => {
 	} //else {
 	// 	console.log(`${DateTime.now().toISO()}: NO SIGNAL ${symbol}`)
 	// }
-}
-
-function buy(candle) {
-	const { macd_line, macd_signal, macd_histogram } = candle
-	// return open < bollinger_lower && psar < low
-	return macd_line < 0 && macd_signal < 0 && macd_histogram > 0
-}
-
-function sell(candle) {
-	const { macd_line, macd_signal, macd_histogram } = candle
-	return macd_line > 0 && macd_signal > 0 && macd_histogram < 0
 }
 
 export default macdSignal
