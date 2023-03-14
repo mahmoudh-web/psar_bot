@@ -35,6 +35,8 @@ const macdSignal = async (instrument, balance) => {
 		// console.log(`sell`, candleData.at(-1))
 		const signalData = {
 			symbol,
+			interval,
+			settings,
 			direction: "sell",
 			candle: candleData.at(-1),
 		}
@@ -48,6 +50,8 @@ const macdSignal = async (instrument, balance) => {
 
 		const signalData = {
 			symbol,
+			interval,
+			settings,
 			direction: "buy",
 			candle: candleData.at(-1),
 		}
