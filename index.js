@@ -7,8 +7,8 @@ import supabase from "./func/supabase.js"
 import MacdBot from "./bots/macd.js"
 import { getActiveTokens } from "./func/getTokens.js"
 import { connectionString } from "./func/stream.js"
-import { getBalance } from "./binance.js"
-import { extractCandleData } from "./candles.js"
+import { getBalance } from "./func/binance.js"
+import { extractCandleData } from "./func/candles.js"
 import macdSignal from "./bots/macdSignal.js"
 
 const mode = process.env.TRADE_MODE
@@ -45,7 +45,6 @@ const dataStream = (url, tokenList) => {
 	stream.on("message", data => {
 		const msg = JSON.parse(data)
 		const candle = extractCandleData(msg)
-
 		const index = tokens.findIndex(obj => obj.symbol === candle.symbol)
 		// console.log(
 		// 	`${tokens[index].symbol}, ${tokens[index].interval} (${tokens[index].token}): ${tokens[index].candles.length} candles, need ${tokens[index].limit}`
@@ -72,6 +71,7 @@ const dataStream = (url, tokenList) => {
 				// )
 				tokens[index].candles.shift()
 
+				// const data = JSON.parse(JSON.stringify(tokens[index]))
 				// process candle
 				if (mode === "trade") {
 					if (tokens[index].type === "macd")
@@ -82,6 +82,7 @@ const dataStream = (url, tokenList) => {
 				}
 			}
 		}
+		// console.log(tokens[index].candles)
 	})
 
 	stream.on("ping", () => stream.pong())

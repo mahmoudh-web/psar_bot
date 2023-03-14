@@ -4,6 +4,7 @@ dotenv.config()
 import supabase from "./supabase.js"
 import { max } from "lodash-es"
 import { historical } from "./historical.js"
+import { DateTime } from "luxon"
 
 const getActiveTokens = async () => {
 	const { data: tokens, error: tokenError } = await supabase
@@ -64,12 +65,14 @@ const getActiveTokens = async () => {
 				const candleData = {
 					symbol: token.symbol,
 					startTime: candle[0],
+					startISO: DateTime.fromMillis(candle[0]).toISO(),
 					endTime: candle[6],
-					open: candle[1],
-					high: candle[2],
-					low: candle[3],
-					close: candle[4],
-					volume: candle[5],
+					endISO: DateTime.fromMillis(candle[6]).toISO(),
+					open: Number(candle[1]),
+					high: Number(candle[2]),
+					low: Number(candle[3]),
+					close: Number(candle[4]),
+					volume: Number(candle[5]),
 				}
 
 				tokenList[index].candles.push(candleData)
