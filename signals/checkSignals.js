@@ -1,8 +1,4 @@
 import supabase from "../func/supabase.js"
-import { round } from "lodash-es"
-import axios from "axios"
-import * as indicators from "../indicators.js"
-import { addIndicatorData } from "../candles.js"
 
 const getSignals = async () => {
 	const { data, error } = await supabase.from("signals").select()

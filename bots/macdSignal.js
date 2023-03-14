@@ -1,5 +1,5 @@
-import * as indicators from "../indicators.js"
-import { addIndicatorData } from "../candles.js"
+import * as indicators from "../indicators/indicators.js"
+import { addIndicatorData } from "../func/candles.js"
 import supabase from "../func/supabase.js"
 
 const amount = process.env.AMOUNT
@@ -7,20 +7,18 @@ let activeTrade = false
 
 const macdSignal = async (instrument, balance) => {
 	const { symbol, token, settings } = instrument
-	const candleInfo = [...instrument.candles]
+	const candleInfo = JSON.parse(JSON.stringify(instrument.candles))
 	console.log(`Looking for signal on ${symbol} - (${token})`)
 
 	// apply indicators
 	const macd = indicators.macd(candleInfo, settings.macd)
 
 	const candleData = addIndicatorData(
-		candleInfo,
+		JSON.parse(JSON.stringify(candleInfo)),
 		{ name: "macd_line", data: macd.macdLine },
 		{ name: "macd_signal", data: macd.macdSignal },
 		{ name: "macd_histogram", data: macd.histogram }
 	)
-
-	// console.log(symbol, candleData)
 
 	// check for buy and sell signals
 	const sellSignal = sell(candleData.at(-1))
@@ -33,7 +31,7 @@ const macdSignal = async (instrument, balance) => {
 
 	// console.log(symbol, tokenValue)
 	if (sellSignal) {
-		console.log(`sell`, candleData.at(-1))
+		// console.log(`sell`, candleData.at(-1))
 		const signalData = {
 			symbol,
 			direction: "sell",
@@ -45,7 +43,7 @@ const macdSignal = async (instrument, balance) => {
 			.insert(signalData)
 		activeTrade = false
 	} else if (buySignal) {
-		console.log(`buy`, candleData.at(-1))
+		// console.log(`buy`, candleData.at(-1))
 
 		const signalData = {
 			symbol,

@@ -1,6 +1,3 @@
-import WebSocket from "ws"
-import { extractCandleData } from "../candles.js"
-
 const connectionString = data => {
 	let socketQuery = "wss://stream.binance.com:9443/stream?streams="
 	for (let i = 0; i < data.length; i++) {

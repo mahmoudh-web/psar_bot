@@ -1,4 +1,4 @@
-import supabase from "./func/supabase.js"
+import supabase from "./supabase.js"
 
 const storeTrade = async trade => {
 	const { data, error } = await supabase

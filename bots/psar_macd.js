@@ -1,8 +1,8 @@
-import { marketBuy, marketSell } from "../binance.js"
-import * as indicators from "../indicators.js"
-import { addIndicatorData } from "../candles.js"
 import { DateTime } from "luxon"
-import { storeTrade } from "../storeTrade.js"
+import { marketBuy, marketSell } from "../func/binance.js"
+import * as indicators from "../indicators/indicators.js"
+import { addIndicatorData } from "../func/candles.js"
+import { storeTrade } from "../func/storeTrade.js"
 
 const amount = process.env.AMOUNT
 
