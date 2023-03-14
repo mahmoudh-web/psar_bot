@@ -45,7 +45,6 @@ const dataStream = (url, tokenList) => {
 	stream.on("message", data => {
 		const msg = JSON.parse(data)
 		const candle = extractCandleData(msg)
-		console.log(candle)
 
 		const index = tokens.findIndex(obj => obj.symbol === candle.symbol)
 		// console.log(
