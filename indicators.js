@@ -1,5 +1,6 @@
 import tulind from "tulind"
 import { formatCandles } from "./candles.js"
+import { round } from "lodash-es"
 
 const atr = (candles, period) => {
 	const { open, high, low, close, volume } = formatCandles(candles)
@@ -29,6 +30,9 @@ const macd = (candles, settings) => {
 			results[0].forEach(res => macdLine.push(res))
 			results[1].forEach(res => macdSignal.push(res))
 			results[2].forEach(res => histogram.push(res))
+			// results[0].forEach(res => macdLine.push(round(res, 2)))
+			// results[1].forEach(res => macdSignal.push(round(res, 2)))
+			// results[2].forEach(res => histogram.push(round(res, 2)))
 		}
 	)
 	return { macdLine, macdSignal, histogram }

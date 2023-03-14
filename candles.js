@@ -5,11 +5,11 @@ const extractCandleData = candle => {
 		symbol: candle.data.s,
 		startTime: candle.data.k.t,
 		endTime: candle.data.k.T,
-		open: candle.data.k.o,
-		high: candle.data.k.h,
-		low: candle.data.k.l,
-		close: candle.data.k.c,
-		volume: candle.data.k.v,
+		open: Number(candle.data.k.o),
+		high: Number(candle.data.k.h),
+		low: Number(candle.data.k.l),
+		close: Number(candle.data.k.c),
+		volume: Number(candle.data.k.v),
 	}
 
 	return data
