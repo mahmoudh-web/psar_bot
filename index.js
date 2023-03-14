@@ -108,7 +108,7 @@ const tokenChanges = supabase
 	.on(
 		"postgres_changes",
 		{ event: "*", schema: "public", table: "tokens" },
-		async payload => {
+		() => {
 			console.log("Change received!")
 			candleData.quit()
 		}

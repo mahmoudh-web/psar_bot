@@ -1,8 +1,5 @@
-import { marketBuy, marketSell } from "../binance.js"
 import * as indicators from "../indicators.js"
 import { addIndicatorData } from "../candles.js"
-import { DateTime } from "luxon"
-import { storeTrade } from "../storeTrade.js"
 import supabase from "../func/supabase.js"
 
 const amount = process.env.AMOUNT
@@ -36,6 +33,7 @@ const macdSignal = async (instrument, balance) => {
 
 	// console.log(symbol, tokenValue)
 	if (sellSignal) {
+		console.log(`sell`, candleData.at(-1))
 		const signalData = {
 			symbol,
 			direction: "sell",
@@ -47,6 +45,8 @@ const macdSignal = async (instrument, balance) => {
 			.insert(signalData)
 		activeTrade = false
 	} else if (buySignal) {
+		console.log(`buy`, candleData.at(-1))
+
 		const signalData = {
 			symbol,
 			direction: "buy",
