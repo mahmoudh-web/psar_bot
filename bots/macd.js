@@ -34,6 +34,7 @@ const MacdBot = async (instrument, balance) => {
 	const tokenBalance = balance[token]
 	const tokenValue = tokenBalance * candleData.at(-1).open
 
+	console.log(usdt, tokenBalance)
 	// console.log(symbol, tokenValue)
 	if (sellSignal && tokenValue > 10) {
 		const trade = await marketSell(symbol, tokenBalance)
