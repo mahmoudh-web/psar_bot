@@ -24,13 +24,13 @@ const updateStream = () => {
 
 // keep token balances stored
 let balances = []
-const updateBalances = async () => {
-	// console.log("updating balances")
-	balances = await getBalance()
-}
+// const updateBalances = async () => {
+// 	// console.log("updating balances")
+// 	balances = await getBalance()
+// }
 
-await updateBalances()
-setInterval(updateBalances, 20000)
+// await updateBalances()
+// setInterval(updateBalances, 20000)
 
 // start stream
 const dataStream = (url, tokenList) => {
@@ -69,8 +69,17 @@ const dataStream = (url, tokenList) => {
 				// console.log(
 				// 	`${tokens[index].symbol}: processing candle, total candles ${tokens[index].candles.length}`
 				// )
-				tokens[index].candles.shift()
+				// tokens[index].candles.shift()
 
+				// if more than limit * 4 ring down tolimit * 2
+				if (tokens[index].candles.legnth > tokens[index].limit * 4) {
+					do {
+						tokens[index].candles.shift()
+					} while (
+						tokens[index].candls.length >
+						tokens[index].limit * 2
+					)
+				}
 				// const data = JSON.parse(JSON.stringify(tokens[index]))
 				// process candle
 				if (mode === "trade") {
@@ -78,6 +87,7 @@ const dataStream = (url, tokenList) => {
 						MacdBot(tokens[index], balances)
 					// psarMacd(tokens[index], balances)
 				} else if (mode === "signals") {
+					console.log(tokens[index].candles.length)
 					macdSignal(tokens[index], balances)
 				}
 			}
