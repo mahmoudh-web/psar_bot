@@ -4,7 +4,6 @@ import supabase from "../func/supabase.js"
 import { macdBuy, macdSell } from "./signals/macdSignals.js"
 
 const amount = process.env.AMOUNT
-let activeTrade = false
 
 const macdSignal = async (instrument, balance) => {
 	const { symbol, token, settings, interval } = instrument
@@ -21,45 +20,39 @@ const macdSignal = async (instrument, balance) => {
 		{ name: "macd_histogram", data: macd.histogram }
 	)
 
+	console.log(candleData)
 	// check for buy and sell signals
 	const sellSignal = macdSell(candleData.at(-1))
 	const buySignal = macdBuy(candleData.at(-1))
 
-	// check balances
-	const usdt = balance["USDT"]
-	const tokenBalance = balance[token]
-	const tokenValue = tokenBalance * candleData.at(-1).open
-
-	// console.log(symbol, tokenValue)
 	if (sellSignal) {
-		// console.log(`sell`, candleData.at(-1))
 		const signalData = {
 			symbol,
-			interval,
-			settings,
+			// interval,
+			// settings,
 			direction: "sell",
 			candle: candleData.at(-1),
 		}
 
+		console.log(`sell`, signalData)
 		const { data, error } = await supabase
 			.from("signals")
 			.insert(signalData)
-		activeTrade = false
 	} else if (buySignal) {
 		// console.log(`buy`, candleData.at(-1))
 
 		const signalData = {
 			symbol,
-			interval,
-			settings,
+			// interval,
+			// settings,
 			direction: "buy",
 			candle: candleData.at(-1),
 		}
 
+		console.log(`buy`, signalData)
 		const { data, error } = await supabase
 			.from("signals")
 			.insert(signalData)
-		activeTrade = true
 	} //else {
 	// 	console.log(`${DateTime.now().toISO()}: NO SIGNAL ${symbol}`)
 	// }

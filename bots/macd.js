@@ -10,14 +10,14 @@ const amount = process.env.AMOUNT
 
 const MacdBot = async (instrument, balance) => {
 	const { symbol, token, settings } = instrument
-	const candleInfo = [...instrument.candles]
+	const candleInfo = JSON.parse(JSON.stringify(instrument.candles))
 	// console.log(`Looking for signal on ${symbol} - (${token})`)
 
 	// apply indicators
-	const macd = indicators.macd(candleInfo, settings.macd)
+	const macd = await indicators.macd(candleInfo, settings.macd)
 
 	const candleData = addIndicatorData(
-		candleInfo,
+		JSON.parse(JSON.stringify(candleInfo)),
 		{ name: "macd_line", data: macd.macdLine },
 		{ name: "macd_signal", data: macd.macdSignal },
 		{ name: "macd_histogram", data: macd.histogram }
@@ -40,13 +40,13 @@ const MacdBot = async (instrument, balance) => {
 		console.log(
 			`${DateTime.now().toISO()}: SELL ${token}:` // ${trade.info.status}`
 		)
-		await storeTrade(trade)
+		await storeTrade(trade, candleData.at(-1))
 	} else if (buySignal && tokenValue < 10 && usdt > amount) {
 		const trade = await marketBuy(symbol)
 		console.log(
 			`${DateTime.now().toISO()}: BUY ${token}:` // ${trade.info.status}`
 		)
-		await storeTrade(trade)
+		await storeTrade(trade, candleData.at(-1))
 	} //else {
 	// 	console.log(`${DateTime.now().toISO()}: NO SIGNAL ${symbol}`)
 	// }
