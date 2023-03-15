@@ -30,8 +30,8 @@ const updateBalances = async () => {
 	balances = await getBalance()
 }
 
-// await updateBalances()
-// setInterval(updateBalances, 20000)
+await updateBalances()
+setInterval(updateBalances, 20000)
 
 // start stream
 const dataStream = (url, tokenList) => {
