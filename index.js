@@ -25,10 +25,10 @@ const updateStream = () => {
 
 // keep token balances stored
 let balances = []
-// const updateBalances = async () => {
-// 	// console.log("updating balances")
-// 	balances = await getBalance()
-// }
+const updateBalances = async () => {
+	// console.log("updating balances")
+	balances = await getBalance()
+}
 
 // await updateBalances()
 // setInterval(updateBalances, 20000)
