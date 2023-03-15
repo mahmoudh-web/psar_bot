@@ -12,6 +12,7 @@ import { extractCandleData } from "./func/candles.js"
 import macdSignal from "./bots/macdSignal.js"
 
 const mode = process.env.TRADE_MODE
+console.log("mode: ", mode)
 
 // get tokens from db
 let tokens = await getActiveTokens()
