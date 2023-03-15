@@ -23,7 +23,7 @@ const MacdBot = async (instrument, balance) => {
 		{ name: "macd_histogram", data: macd.histogram }
 	)
 
-	// console.log(symbol, candleData)
+	console.log(symbol, candleData)
 
 	// check for buy and sell signals
 	const sellSignal = macdSell(candleData.at(-1))
