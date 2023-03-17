@@ -52,9 +52,9 @@ const macdDifferentBot = async (instrument, balance) => {
 		console.log(
 			`${DateTime.now().toISO()}: BUY ${token}:` // ${trade.info.status}`
 		)
-	} else {
-		console.log(`${DateTime.now().toISO()}: NO SIGNAL ${symbol}`)
-	}
+	} //else {
+	// 	console.log(`${DateTime.now().toISO()}: NO SIGNAL ${symbol}`)
+	// }
 }
 
 export default macdDifferentBot

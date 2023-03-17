@@ -5,6 +5,7 @@ const storeTrade = async (trade, candle) => {
 		trade,
 		candle,
 		cost: trade.cost,
+		price: trade.price,
 	}
 	const { data, error } = await supabase
 		.from("trades")
