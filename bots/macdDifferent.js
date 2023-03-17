@@ -41,14 +41,14 @@ const macdDifferentBot = async (instrument, balance) => {
 	const tokenValue = tokenBalance * candleData.at(-1).open
 
 	if (sellSignal && tokenValue > 10) {
-		// const trade = await marketSell(symbol, tokenBalance)
-		// await storeTrade(trade, candleData.at(-1))
+		const trade = await marketSell(symbol, tokenBalance)
+		await storeTrade(trade, candleData.at(-1))
 		console.log(
 			`${DateTime.now().toISO()}: SELL ${token}:` // ${trade.info.status}`
 		)
 	} else if (buySignal && tokenValue < 10 && usdt > amount) {
-		// const trade = await marketBuy(symbol)
-		// await storeTrade(trade, candleData.at(-1))
+		const trade = await marketBuy(symbol)
+		await storeTrade(trade, candleData.at(-1))
 		console.log(
 			`${DateTime.now().toISO()}: BUY ${token}:` // ${trade.info.status}`
 		)
