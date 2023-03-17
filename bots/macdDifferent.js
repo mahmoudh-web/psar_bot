@@ -15,7 +15,6 @@ const macdDifferentBot = async (instrument, balance) => {
 	const candleInfo = JSON.parse(JSON.stringify(instrument.candles))
 	console.log(`Looking for signal on ${symbol} - (${type})`)
 
-	console.log(settings)
 	// apply indicators
 	const macdIn = await indicators.macd(candleInfo, settings.macd_in)
 	const macdOut = await indicators.macd(candleInfo, settings.macd_out)
