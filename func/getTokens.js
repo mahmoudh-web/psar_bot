@@ -34,16 +34,22 @@ const getActiveTokens = async () => {
 					period: token.settings.bollinger.period,
 					deviation: token.settings.bollinger.deviation,
 				},
-				macd: {
-					short: token.settings.macd.short,
-					long: token.settings.macd.long,
-					signal: token.settings.macd.signal,
+				macd_in: {
+					short: token.settings.macd_in.short,
+					long: token.settings.macd_in.long,
+					signal: token.settings.macd_in.signal,
+				},
+				macd_out: {
+					short: token.settings.macd_out.short,
+					long: token.settings.macd_out.long,
+					signal: token.settings.macd_out.signal,
 				},
 			},
 			limit:
 				max([
 					token.settings.bollinger.period,
-					token.settings.macd.long,
+					token.settings.macd_in.long,
+					token.settings.macd_out ? token.settings.macd_out.long : 0,
 				]) + 1,
 			candles: [],
 		})

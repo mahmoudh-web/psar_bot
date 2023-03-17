@@ -10,6 +10,7 @@ import { connectionString } from "./func/stream.js"
 import { getBalance } from "./func/binance.js"
 import { extractCandleData } from "./func/candles.js"
 import macdSignal from "./bots/macdSignal.js"
+import macdDifferentBot from "./bots/macdDifferent.js"
 
 const mode = process.env.TRADE_MODE
 console.log("mode: ", mode)
@@ -84,8 +85,14 @@ const dataStream = (url, tokenList) => {
 				// const data = JSON.parse(JSON.stringify(tokens[index]))
 				// process candle
 				if (mode === "trade") {
-					if (tokens[index].type === "macd")
-						MacdBot(tokens[index], balances)
+					switch (tokens[index].type) {
+						case "macd":
+							MacdBot(tokens[index], balances)
+							break
+						case "macdDifferent":
+							macdDifferentBot(tokens[index], balances)
+							break
+					}
 					// psarMacd(tokens[index], balances)
 				} else if (mode === "signals") {
 					console.log(tokens[index].candles.length)

@@ -12,6 +12,7 @@ const binance = new ccxt.binance({
 
 const getBalance = async () => {
 	const balances = await binance.fetchBalance().catch(err => console.log(err))
+	if (!balances) return []
 	return balances.free
 }
 
