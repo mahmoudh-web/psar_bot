@@ -13,7 +13,7 @@ const amount = process.env.AMOUNT
 const macdDifferentBot = async (instrument, balance) => {
 	const { symbol, token, settings, type } = instrument
 	const candleInfo = JSON.parse(JSON.stringify(instrument.candles))
-	console.log(`Looking for signal on ${symbol} - (${type})`)
+	// console.log(`Looking for signal on ${symbol} - (${type})`)
 
 	// apply indicators
 	const macdIn = await indicators.macd(candleInfo, settings.macd_in)
